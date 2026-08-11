@@ -10,10 +10,9 @@
       </h1>
 
       <!-- Comic Chat Bubble Blog Link -->
-      <a
-        href="/blog"
+      <router-link
+        to="/blog"
         class="relative bg-pink-300 text-stone-900 px-6 py-3 rounded-full font-bold shadow-md hover:scale-105 transition"
-
       >
         Just Sayin ~
 
@@ -21,7 +20,7 @@
         <span
           class="absolute -bottom-2 right-6 w-4 h-4 bg-pink-300 rotate-45"
         ></span>
-      </a>
+      </router-link>
 
     </header>
 
