@@ -15,7 +15,7 @@
         class="relative bg-pink-300 text-stone-900 px-6 py-3 rounded-full font-bold shadow-md hover:scale-105 transition"
 
       >
-        Just Sayin
+        Just Sayin ~
 
         <!-- Bubble Tail -->
         <span
