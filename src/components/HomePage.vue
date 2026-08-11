@@ -38,12 +38,12 @@
           <p class="text-stone-700 mb-8">
             Words from the heart. Original poetry and soulful reflections.
           </p>
-          <a
-            href="/poems"
+          <router-link
+            to="/poems"
             class="inline-block font-semibold underline group-hover:text-stone-900"
           >
             Enter Poems →
-          </a>
+          </router-link>
         </section>
 
         <!-- PHOTOS -->
@@ -54,12 +54,12 @@
           <p class="text-stone-700 mb-8">
             Visual stories, emotions captured in still moments.
           </p>
-          <a
-            href="/photos"
+          <router-link
+            to="/photos"
             class="inline-block font-semibold underline group-hover:text-stone-900"
           >
             Enter Photos →
-          </a>
+          </router-link>
         </section>
 
         <!-- STORIES -->
@@ -70,12 +70,12 @@
           <p class="text-stone-700 mb-8">
             Short stories, memories, and imaginative journeys.
           </p>
-          <a
-            href="/stories"
+          <router-link
+            to="/stories"
             class="inline-block font-semibold underline group-hover:text-stone-900"
           >
             Enter Stories →
-          </a>
+          </router-link>
         </section>
 
       </div>
