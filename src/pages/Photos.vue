@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import api from '../lib/api'
+import { isAdmin, logout } from '../lib/auth'
 
 type Photo = { _id: string; title: string; caption: string; pic_url: string; createdAt?: string }
 
@@ -56,12 +57,15 @@ onMounted(loadPhotos)
   <div class="min-h-screen bg-yellow-50 text-stone-800">
     <header class="flex items-center justify-between px-8 py-6 bg-blue-100 border-b-4 border-blue-200 shadow-sm">
       <h1 class="text-3xl md:text-4xl font-extrabold text-stone-900">Photos</h1>
-      <router-link to="/" class="font-semibold underline">← Home</router-link>
+      <div class="flex items-center gap-4">
+        <button v-if="isAdmin" @click="logout" class="text-sm font-semibold text-stone-500 hover:text-stone-800">Log out</button>
+        <router-link to="/" class="font-semibold underline">← Home</router-link>
+      </div>
     </header>
 
     <main class="max-w-5xl mx-auto px-6 py-12">
       <!-- Upload form -->
-      <section class="bg-blue-100 rounded-3xl shadow-xl p-8 border-4 border-blue-200 mb-12 max-w-2xl mx-auto">
+      <section v-if="isAdmin" class="bg-blue-100 rounded-3xl shadow-xl p-8 border-4 border-blue-200 mb-12 max-w-2xl mx-auto">
         <h2 class="text-2xl font-bold mb-4">Upload a Photo</h2>
         <input
           v-model="title"
@@ -114,6 +118,7 @@ onMounted(loadPhotos)
               <div class="flex items-start justify-between">
                 <h3 class="text-lg font-bold">{{ photo.title }}</h3>
                 <button
+                  v-if="isAdmin"
                   @click="deletePhoto(photo._id)"
                   class="text-sm text-red-500 hover:text-red-700 font-semibold"
                 >

@@ -4,6 +4,7 @@ import Poems from './pages/Poems.vue'
 import Stories from './pages/Stories.vue'
 import Photos from './pages/Photos.vue'
 import Blog from './pages/Blog.vue'
+import Login from './pages/Login.vue'
 
 const routes = [
   { path: '/', name: 'home', component: HomePage },
@@ -11,6 +12,7 @@ const routes = [
   { path: '/stories', name: 'stories', component: Stories },
   { path: '/photos', name: 'photos', component: Photos },
   { path: '/blog', name: 'blog', component: Blog },
+  { path: '/login', name: 'login', component: Login },
 ]
 
 export default createRouter({

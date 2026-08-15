@@ -63,7 +63,7 @@
 
         <!-- STORIES -->
         <section
-          class="flex-1 group bg-purple-100 rounded-3xl shadow-xl p-10 hover:-translate-y-1 transition border-4 border-purple-200"
+          class="flex-1 group bg-cyan-100 rounded-3xl shadow-xl p-10 hover:-translate-y-1 transition border-4 border-cyan-200"
         >
           <h2 class="text-3xl font-bold mb-4">Stories</h2>
           <p class="text-stone-700 mb-8">
@@ -80,6 +80,16 @@
       </div>
 
     </main>
+
+    <!-- Admin login (for the site owner to add/manage content) -->
+    <footer class="py-8 text-center">
+      <router-link
+        to="/login"
+        class="text-sm font-semibold text-stone-400 hover:text-stone-700 underline"
+      >
+        Admin Login
+      </router-link>
+    </footer>
 
   </div>
 </template>
