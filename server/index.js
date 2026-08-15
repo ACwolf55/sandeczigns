@@ -14,8 +14,11 @@ const { MongoClient, ObjectId } = require('mongodb')
 const { MongoURI } = process.env
 const client = new MongoClient(MongoURI)   // modern driver: no need for the old useNewUrlParser/useUnifiedTopology options
 const { cloudinary } = require('./cloudinary')
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+const { requireAdmin } = require('./middleware/auth')
 
-const { PORT } = process.env
+const { PORT, JWT_SECRET } = process.env
 const DB = 'sandeczigns'   // database name
 
 app.use(express.json({ limit: '50mb' }))          // large limit so base64 image uploads fit
@@ -28,7 +31,35 @@ app.listen(PORT, () => console.log(`Server running on port ${PORT}!`))
 
 
 // ============================================================
+//  AUTH — admin login. Returns a JWT the frontend stores and
+//  sends back on write requests (see requireAdmin middleware).
+// ============================================================
+
+app.post('/auth/login', async (req, res) => {
+  const { username, password } = req.body
+  try {
+    await client.connect()
+    const admin = await client.db(DB).collection('admins').findOne({ username })
+    if (!admin) return res.status(401).send('Invalid credentials')
+
+    const isAuth = bcrypt.compareSync(password, admin.password)
+    if (!isAuth) return res.status(401).send('Invalid credentials')
+
+    // sign a token that's valid for 7 days
+    const token = jwt.sign({ id: admin._id, username: admin.username }, JWT_SECRET, { expiresIn: '7d' })
+    return res.send({ token, username: admin.username })
+  } catch (e) {
+    console.error(e)
+    res.status(500).send('server error')
+  } finally {
+    await client.close()
+  }
+})
+
+
+// ============================================================
 //  POEMS  — { title, body }
+//  GET is public; POST/DELETE require admin (requireAdmin).
 // ============================================================
 
 // get all poems (newest first)
@@ -46,7 +77,7 @@ app.get('/poems', async (req, res) => {
 })
 
 // add a poem
-app.post('/poems', async (req, res) => {
+app.post('/poems', requireAdmin, async (req, res) => {
   const { title, body } = req.body
   try {
     await client.connect()
@@ -62,7 +93,7 @@ app.post('/poems', async (req, res) => {
 })
 
 // delete a poem by id
-app.delete('/poems/:id', async (req, res) => {
+app.delete('/poems/:id', requireAdmin, async (req, res) => {
   const { id } = req.params
   try {
     await client.connect()
@@ -94,7 +125,7 @@ app.get('/stories', async (req, res) => {
   }
 })
 
-app.post('/stories', async (req, res) => {
+app.post('/stories', requireAdmin, async (req, res) => {
   const { title, body } = req.body
   try {
     await client.connect()
@@ -109,7 +140,7 @@ app.post('/stories', async (req, res) => {
   }
 })
 
-app.delete('/stories/:id', async (req, res) => {
+app.delete('/stories/:id', requireAdmin, async (req, res) => {
   const { id } = req.params
   try {
     await client.connect()
@@ -143,7 +174,7 @@ app.get('/photos', async (req, res) => {
 })
 
 // upload a photo: send it to Cloudinary, then save the record in Mongo
-app.post('/photos', async (req, res) => {
+app.post('/photos', requireAdmin, async (req, res) => {
   const { title, caption, data } = req.body   // `data` is the base64 string from the frontend
   try {
     // 1. upload the image to Cloudinary (into a "sandeczigns" folder)
@@ -169,7 +200,7 @@ app.post('/photos', async (req, res) => {
 })
 
 // delete a photo — removes it from both Cloudinary and Mongo
-app.delete('/photos/:id', async (req, res) => {
+app.delete('/photos/:id', requireAdmin, async (req, res) => {
   const { id } = req.params
   try {
     await client.connect()
